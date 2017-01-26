@@ -4,7 +4,7 @@
   "description": "Commute time skill for Alexa",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/khisakuni/commute-time/issues"
   },
-  "homepage": "https://github.com/khisakuni/commute-time#readme"
+  "homepage": "https://github.com/khisakuni/commute-time#readme",
+  "dependencies": {
+    "alexa-app": "2.4.0",
+    "chai": "3.5.0",
+    "lodash": "^4.17.4",
+    "mocha": "3.2.0"
+  }
 }
