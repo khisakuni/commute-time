@@ -5,10 +5,20 @@ const sessionHelpers = require('./services/session-helpers');
 const buildAddressHelpers = require('./services/build-address-helpers');
 const Address = require('./address');
 const SESSION_KEY = process.env.CT_SESSION_KEY;
+const DatabaseHelper = require('./services/database-helper');
+const dbHelper = new DatabaseHelper();
 
 const launchIntentHandler = (req, res) => {
-  // TODO: try to load addresses
-  res.say(responses.inquireStartAddress()).shouldEndSession(false)
+  dbHelper.readAddresses(sessionHelpers.getUserId(req)).then((addresses) => {
+    if (_.isEmpty(addresses)) {
+      res.say(responses.inquireStartAddress()).shouldEndSession(false);
+    } else {
+      const names = _.map(addresses, address => address.name);
+      res.say(responses.listAddressesThenInquire(names)).shouldEndSession(false);
+    }
+    res.send();
+  });
+  return false; // async intent handler
 };
 
 const buildStartAddress = (req, res) => {
@@ -18,14 +28,14 @@ const buildStartAddress = (req, res) => {
   const endAddress = addressesData.endAddress;
   const sessionData = addressesData.sessionData;
 
-
   // TODO: fill these in
   if (startAddress.isComplete() && endAddress.isComplete()) {
     res.say('both addresses complete').shouldEndSession(false);
   } else if (startAddress.isComplete()) {
+    dbHelper.storeAddress(sessionHelpers.getUserId(req), startAddress);
     res.say('starting address complete. Need end address').shouldEndSession(false);
   } else {
-    res.say('startgin address incomplete').shouldEndSession(false);
+    res.say('starting address incomplete').shouldEndSession(false);
   }
 
   res.session(SESSION_KEY, sessionData);
@@ -40,11 +50,12 @@ const buildEndAddress = (req, res) => {
 
   // TODO: fill these in
   if (startAddress.isComplete() && endAddress.isComplete()) {
+    dbHelper.storeAddress(sessionHelpers.getUserId(req), endAddress);
     res.say('both addresses complete').shouldEndSession(false);
   } else if (startAddress.isComplete()) {
     res.say('starting address complete. Need end address').shouldEndSession(false);
   } else {
-    res.say('startgin address incomplete').shouldEndSession(false);
+    res.say('starting address incomplete').shouldEndSession(false);
   }
 
   res.session(SESSION_KEY, sessionData);

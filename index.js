@@ -1,8 +1,12 @@
 const Alexa = require('alexa-app');
 const intentHandlers = require('./skill/intent-handlers');
 const intents = require('./skill/intents');
+const DatabaseHelper = require('./skill/services/database-helper');
+const dbHelper = new DatabaseHelper();
 
 const skill = new Alexa.app('commute-time');
+
+skill.pre = (req, res, type) => dbHelper.createTable();
 
 skill.launch(intentHandlers.launchIntentHandler);
 

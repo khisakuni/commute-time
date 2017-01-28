@@ -37,8 +37,13 @@ function getSessionData(req) {
   return data ? data : { start: {}, end: {} };
 }
 
+function getUserId(req) {
+  return req.sessionDetails.userId;
+}
+
 module.exports = {
   updateSessionData,
   formatSlotValues,
   getSessionData,
+  getUserId: getUserId,
 };

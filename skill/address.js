@@ -30,6 +30,14 @@ function Address(params) {
   this.formatAddress = () => (
     `${this.buildingNumber} ${this.street}, ${this.city}, ${this.state}`
   );
+
+  this.toObj = () => ({
+    name: this.name,
+    buildingNumber: this.buildingNumber,
+    street: this.street,
+    city: this.city,
+    state: this.state,
+  });
 };
 
 module.exports = Address;
