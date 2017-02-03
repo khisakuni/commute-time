@@ -1,3 +1,4 @@
+const _  = require('lodash');
 const sessionHelpers = require('./session-helpers');
 const Address = require('../address');
 
@@ -16,6 +17,9 @@ const updateSessionAddresses = (slotNames, req) => {
   return { sessionData: addresses, startAddress, endAddress };
 };
 
+const findAddress = (addresses, address) => _.find(addresses, address.eql);
+
 module.exports = {
   updateSessionAddresses,
+  findAddress,
 };

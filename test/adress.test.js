@@ -82,4 +82,38 @@ describe('Address', function() {
       expect(subject.formatAddress()).to.eql(expected);
     });
   });
+
+  describe('#eql', function() {
+    it('returns true if have same fields', function() {
+      const subject = new Address({
+        buildingNumber: '1234',
+        street: 'Sunset blvd',
+        city: 'Los Angeles',
+        state: 'California',
+        name: 'home',
+      });
+      const same = new Address({
+        buildingNumber: subject.buildingNumber,
+        street: subject.street,
+        city: subject.city,
+        state: subject.state,
+        name: subject.name,
+      });
+
+      expect(subject.eql(same)).to.eql(true);
+    });
+
+    it('returns false if have different fields', function() {
+      const subject = new Address({
+        buildingNumber: '1234',
+        street: 'Sunset blvd',
+        city: 'Los Angeles',
+        state: 'California',
+        name: 'home',
+      });
+      const notSame = new Address({ buildingNumber: '4321' });
+
+      expect(subject.eql(notSame)).to.eql(false);
+    });
+  });
 });

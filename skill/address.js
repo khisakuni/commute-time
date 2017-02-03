@@ -38,6 +38,15 @@ function Address(params) {
     city: this.city,
     state: this.state,
   });
+
+  this.eql = address => {
+    const sameName = this.name === address.name;
+    const sameBuildingNumber = this.buildingNumber === address.buildingNumber;
+    const sameStreet = this.street === address.street;
+    const sameCity = this.city === address.city;
+    const sameState = this.state === address.state;
+    return sameName && sameBuildingNumber && sameStreet && sameCity && sameState;
+  };
 };
 
 module.exports = Address;

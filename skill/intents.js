@@ -10,6 +10,7 @@ const intents = {
         startState: 'AMAZON.US_STATE',
       },
       utterances: [
+        'from a new place',
         'from {-|startName}',
         'from {-|startBuildingNumber}',
         'from {-|startStreet}',
@@ -29,6 +30,7 @@ const intents = {
         endState: 'AMAZON.US_STATE',
       },
       utterances: [
+        'to a new place',
         'to {-|endName}',
         'to {-|endBuildingNumber}',
         'to {-|endStreet}',

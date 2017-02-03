@@ -1,22 +1,29 @@
 const Address = require('./address');
 
-const inquireStartAddress = () => {
-  const address = new Address(); // Using this to get proper examples, etc for missing fields.
+const inquireStartAddress = (address) => {
+  address = (address || new Address());
   const missing = address.missingFields()[0];
-  return `${missing.prompt}. For example, say, "going to ${missing.example}"`;
+  return `${missing.prompt} you're starting from. For example, say, "from ${missing.example}"`;
 };
+
+const inquireEndAddress = (address) => {
+  address = (address || new Address());
+  const missing = address.missingFields()[0];
+  return `${missing.prompt} you're going to. For example, say, "to ${missing.example}"`;
+}
 
 const listSavedAddresses = addressNames => (
   `${addressNames.join(', ')}`
 );
 
-// TODO: can we get a better name pls?
-const listAddressesThenInquire = addressNames => (
-  `Are you starting from ${listSavedAddresses(addressNames)}, or from a new place?`
-);
+const listAddressesThenInquire = (addressNames, direction) => {
+  const s = direction === 'start' ? 'starting from' : 'going to';
+  return `Are you ${s} ${listSavedAddresses(addressNames)}, or ${s} a new place?`
+};
 
 module.exports = {
   inquireStartAddress,
+  inquireEndAddress,
   listSavedAddresses,
   listAddressesThenInquire,
 };
