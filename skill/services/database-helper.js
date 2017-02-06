@@ -1,14 +1,7 @@
 const _ = require('lodash');
 const Address = require('../address');
 const TABLE_NAME = process.env.CT_TABLE_NAME;
-const url = process.env.CT_DB_URL;
-const credentials = {
-  region: process.env.CT_REGION,
-  accessKeyId: process.env.CT_ACCESS_KEY_ID,
-  secretAccessKey: process.env.CT_SECRET_ACCESS_KEY,
-};
-
-const dynasty = require('dynasty')(credentials, url);
+const dynasty = require('dynasty')({});
 
 const parseRes = res => _.isNil(res) ? { addresses: [] } : JSON.parse(res.data);
 
