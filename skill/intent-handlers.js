@@ -7,6 +7,8 @@ const Address = require('./address');
 const SESSION_KEY = process.env.CT_SESSION_KEY;
 const DatabaseHelper = require('./services/database-helper');
 const dbHelper = new DatabaseHelper();
+const TravelTimeService = require('./services/travel-time-service');
+const tranvelTimeService = new TravelTimeService;
 
 const launchIntentHandler = (req, res) => {
   dbHelper.readAddresses(sessionHelpers.getUserId(req)).then((addresses) => {
@@ -40,8 +42,10 @@ const buildStartAddress = (req, res) => {
     }
 
     if (startAddress.isComplete() && endAddress.isComplete()) {
-      res.say('both addresses complete').shouldEndSession(true);
-      // TODO: calculate travel time
+      tranvelTimeService.getCommuteTimeInMinutes(startAddress.formatAddress(), endAddress.formatAddress()).then((mins) => {
+        res.say(`That will take ${mins} minutes`).shouldEndSession(true);
+        res.send();
+      });
     } else if (startAddress.isComplete()) {
       if (!addressHelpers.findAddress(addresses, startAddress)) {
         dbHelper.storeAddress(sessionHelpers.getUserId(req), startAddress);
@@ -50,15 +54,17 @@ const buildStartAddress = (req, res) => {
       const names = _.map(addresses, address => address.name);
       if (_.isEmpty(names)) {
         res.say(responses.inquireEndAddress()).shouldEndSession(false);
+        res.send();
       } else {
         res.say(responses.listAddressesThenInquire(names, 'end')).shouldEndSession(false);
+        res.send();
       }
     } else {
       res.say(responses.inquireStartAddress(startAddress)).shouldEndSession(false);
+      res.send();
     }
 
     res.session(SESSION_KEY, sessionData);
-    res.send();
   });
 
   return false; // async intent handler
@@ -86,21 +92,25 @@ const buildEndAddress = (req, res) => {
       if (!addressHelpers.findAddress(addresses, endAddress)) {
         dbHelper.storeAddress(sessionHelpers.getUserId(req), endAddress);
       }
-      // TODO: calculate travel time
-      res.say('both addresses complete').shouldEndSession(true);
+      tranvelTimeService.getCommuteTimeInMinutes(startAddress.formatAddress(), endAddress.formatAddress()).then((mins) => {
+        res.say(`That will take ${mins} minutes`).shouldEndSession(true);
+        res.send();
+      });
     } else if (startAddress.isComplete()) {
       res.say(responses.inquireEndAddress(endAddress)).shouldEndSession(false);
+      res.send();
     } else {
       const names = _.map(addresses, address => address.name);
       if (_.isEmpty(names)) {
         res.say(responses.inquireStartAddress()).shouldEndSession(false);
+        res.send();
       } else {
         res.say(responses.listAddressesThenInquire(names, 'start')).shouldEndSession(false);
+        res.send();
       }
     }
 
     res.session(SESSION_KEY, sessionData);
-    res.send();
   });
 
   return false; // async intent handler
