@@ -23,6 +23,23 @@ const launchIntentHandler = (req, res) => {
   return false; // async intent handler
 };
 
+const buildAddress = (req, res) => {
+  const slotNames = _.keys(intents.buildAddress.params.slots);
+
+  const requestData = _.omitBy(_.reduce(slotNames, (sum, name) => {
+    sum[name] = req.slot(name);
+    return sum;
+  }, {}), _.isEmpty);
+  const sessionData = sessionHelpers.getSessionData(req);
+  const addressData = _.merge(sessionData, requestData);
+
+  const address = new Address(addressData);
+
+  console.log('requst data >', requestData)
+  res.session(SESSION_KEY, addressData);
+
+};
+
 const buildStartAddress = (req, res) => {
   const slotNames = _.keys(intents.buildStartAddress.params.slots);
   const addressesData = addressHelpers.updateSessionAddresses(slotNames, req);
@@ -118,6 +135,5 @@ const buildEndAddress = (req, res) => {
 
 module.exports = {
   launchIntentHandler,
-  buildStartAddress,
-  buildEndAddress,
+  buildAddress
 };

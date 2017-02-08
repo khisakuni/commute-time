@@ -10,10 +10,13 @@ skill.pre = (req, res, type) => dbHelper.createTable();
 
 skill.launch(intentHandlers.launchIntentHandler);
 
-const buildStartAddress = intents.buildStartAddress;
-skill.intent(buildStartAddress.name, buildStartAddress.params, intentHandlers.buildStartAddress);
+// const buildStartAddress = intents.buildStartAddress;
+// skill.intent(buildStartAddress.name, buildStartAddress.params, intentHandlers.buildStartAddress);
+//
+// const buildEndAddress = intents.buildEndAddress;
+// skill.intent(buildEndAddress.name, buildEndAddress.params, intentHandlers.buildEndAddress);
 
-const buildEndAddress = intents.buildEndAddress;
-skill.intent(buildEndAddress.name, buildEndAddress.params, intentHandlers.buildEndAddress);
+const buildAddress = intents.buildAddress;
+skill.intent(buildAddress.name, buildAddress.params, intentHandlers.buildAddress);
 
 module.exports = skill;

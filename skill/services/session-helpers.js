@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const SESSION_KEY = process.env.SESSION_KEY || 'commute-time-session';
+const Address = require('../address');
 
 function updateSessionData(sessionData, slotValues) {
   _.each(slotValues, (slotValue) => {
@@ -16,21 +17,21 @@ function updateSessionData(sessionData, slotValues) {
   return sessionData;
 }
 
-function formatSlotValues(slotValues) {
-  return _.compact(_.map(slotValues, (slotValue) => {
-    const formatted = {};
-    const key = _.keys(slotValue)[0];
-    const value = _.values(slotValue)[0];
-    if (_.isEmpty(value)) return;
-    const words = _.words(key);
-    const prefix = words.shift();
-    const name = _.camelCase(words.join(' '));
-    const sub = {};
-    sub[name] = value;
-    formatted[prefix] = sub;
-    return formatted;
-  }));
-}
+// function formatSlotValues(slotValues) {
+//   return _.compact(_.map(slotValues, (slotValue) => {
+//     const formatted = {};
+//     const key = _.keys(slotValue)[0];
+//     const value = _.values(slotValue)[0];
+//     if (_.isEmpty(value)) return;
+//     const words = _.words(key);
+//     const prefix = words.shift();
+//     const name = _.camelCase(words.join(' '));
+//     const sub = {};
+//     sub[name] = value;
+//     formatted[prefix] = sub;
+//     return formatted;
+//   }));
+// }
 
 function getSessionData(req) {
   const data = req.session(SESSION_KEY);
@@ -41,9 +42,27 @@ function getUserId(req) {
   return req.sessionDetails.userId;
 }
 
+const getSessionAddresses = (req) => {
+  const sessionData = getSessionData(req);
+  const startAddress = new Address(sessionData.start);
+  const endAddress = new Address(sessionData.end);
+
+  return { start: startAddress, end: endAddress };
+}
+
+const getSessionStatus = (req) => {
+  if (startAddress.isComplete() && endAddress.isComplete()) {
+    return 'complete';
+  } else if (startAddress.isComplete() && !endAddress.isComplete()) {
+    return 'endAddressComplete'
+  } else  {
+    return 'incomplete';
+  }
+};
+
 module.exports = {
   updateSessionData,
-  formatSlotValues,
   getSessionData,
-  getUserId: getUserId,
+  getUserId,
+  getSessionAddresses,
 };
